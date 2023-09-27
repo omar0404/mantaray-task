@@ -3,14 +3,16 @@ import {StyleSheet, View, Text, TouchableOpacity} from 'react-native';
 import Event from '../components/event';
 import {RootStackParamList} from '../navigation/home-navigation';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {updateEvent} from '../api/events';
-import {useSelector} from 'react-redux';
-import {RootState} from '../reducers/store';
+import {updateEvent as updateEventApi} from '../api/events';
+import {useDispatch, useSelector} from 'react-redux';
+import {AppDispatch, RootState} from '../reducers/store';
+import {updateEvent} from '../actions/events';
 type Props = NativeStackScreenProps<RootStackParamList, 'EventDetails'>;
 
 const EventDetails = ({route, navigation}: Props) => {
   const [event, setEvent] = useState(route.params.event);
   const {user} = useSelector<RootState, RootState['user']>(state => state.user);
+  const dispatch = useDispatch<AppDispatch>();
   const isRegisterDisabled =
     event.users.includes(user?.id as number) ||
     event.capacity === event.users.length;
@@ -18,11 +20,10 @@ const EventDetails = ({route, navigation}: Props) => {
     navigation.setOptions({title: event.title});
   }, []);
   const onRegister = async () => {
-    const updatedEvent = await updateEvent(event.id, [
-      ...event.users,
-      user?.id as number,
-    ]);
+    const updatedUsers = [...event.users, user?.id as number];
+    const updatedEvent = await updateEventApi(event.id, updatedUsers);
     setEvent(updatedEvent);
+    dispatch(updateEvent(event.id, {...event, users: updatedUsers}));
   };
   return (
     <View>

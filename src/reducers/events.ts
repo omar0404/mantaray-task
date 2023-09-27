@@ -1,5 +1,5 @@
 import {createSlice} from '@reduxjs/toolkit';
-import {getEvents} from '../actions/events';
+import {getEvents, updateEvent} from '../actions/events';
 import {Event} from '../types';
 
 type state = {isLoading: boolean; events: Event[]};
@@ -20,6 +20,12 @@ export const eventsSlice = createSlice({
     });
     builder.addCase(getEvents.rejected, state => {
       state.isLoading = false;
+    });
+    builder.addCase(updateEvent, (state, action) => {
+      state.isLoading = false;
+      state.events = state.events.map(event =>
+        event.id === action.payload.id ? action.payload.event : event,
+      );
     });
   },
 });

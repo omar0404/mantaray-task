@@ -13,6 +13,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import {AppDispatch, RootState} from '../reducers/store';
 import {createStackNavigator} from '@react-navigation/stack';
 import {clearUser, getUser} from '../actions/user';
+import MyProfileNavigation from './myprofile-navigation';
 const Drawer = createDrawerNavigator();
 const Stack = createStackNavigator<RootStackParamList>();
 
@@ -46,7 +47,7 @@ function MyDrawer() {
   );
   const dispatch = useDispatch<AppDispatch>();
   useEffect(() => {
-    dispatch(getUser(user?.id));
+    dispatch(getUser(user?.id as number));
   }, []);
   if (isLoading) {
     return null;
@@ -62,7 +63,9 @@ function MyDrawer() {
   return (
     <Drawer.Navigator drawerContent={DrawerItems}>
       <Drawer.Screen name="Main" component={HomeNavigation} />
-      {user && <Drawer.Screen name="MyProfile" component={MyProfile} />}
+      {user && (
+        <Drawer.Screen name="MyProfile" component={MyProfileNavigation} />
+      )}
     </Drawer.Navigator>
   );
 }

@@ -1,14 +1,14 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import {FlatList, StyleSheet, TouchableOpacity, View} from 'react-native';
 import {useSelector} from 'react-redux';
 import {RootState} from '../reducers/store';
-import {RootStackParamList} from '../navigation/home-navigation';
+import {RootStackParamList} from '../navigation/myprofile-navigation';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import Event from '../components/event';
 import {events} from '../api';
 import {Event as EventType} from '../types';
 import {useFocusEffect} from '@react-navigation/native';
-type Props = NativeStackScreenProps<RootStackParamList, 'Home'>;
+type Props = NativeStackScreenProps<RootStackParamList, 'MyProfile'>;
 
 const MyProfile = ({navigation}: Props) => {
   const [data, setData] = useState<EventType[]>([]);
@@ -27,7 +27,7 @@ const MyProfile = ({navigation}: Props) => {
         data={data}
         renderItem={({item}) => (
           <TouchableOpacity
-            // onPress={() => navigation.navigate('Event', {event: item})}
+            onPress={() => navigation.navigate('EventDetails', {event: item})}
             key={item.id}>
             <Event event={item} />
           </TouchableOpacity>

@@ -1,7 +1,11 @@
 import {events} from '../api';
-import {createAsyncThunk} from '@reduxjs/toolkit';
+import {createAction, createAsyncThunk} from '@reduxjs/toolkit';
 
 export const getEvents = createAsyncThunk(
-  'evets/fetchEvents',
+  'events/fetchEvents',
   events.getEvents,
 );
+
+export const updateEvent = createAction('events/updateEvent', (id, event) => ({
+  payload: {id, event},
+}));
