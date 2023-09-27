@@ -18,6 +18,7 @@ const Event = ({event}: {event: EventType}) => (
         <Text style={[style.topSpace, style.price]}>${event.price}</Text>
       </View>
       <View style={[style.column, style.rightColumn]}>
+        <Image style={style.icon} source={require('../assets/user.png')} />
         <Text>{`${event.users.length} / ${event.capacity}`}</Text>
       </View>
     </View>
@@ -38,7 +39,13 @@ const style = StyleSheet.create({
     flex: 1,
   },
   rightColumn: {
-    alignItems: 'flex-end',
+    justifyContent: 'flex-end',
+    flexDirection: 'row',
+  },
+  icon: {
+    width: 15,
+    height: 15,
+    marginRight: 5,
   },
   topSpace: {
     marginTop: 3,
