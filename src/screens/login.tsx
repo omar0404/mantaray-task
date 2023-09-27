@@ -1,5 +1,4 @@
-import React from 'react';
-import {useFormik} from 'formik';
+import React, {useState} from 'react';
 import {
   TextInput,
   TouchableOpacity,
@@ -12,39 +11,46 @@ import {AppDispatch} from '../reducers/store';
 import {login} from '../reducers/user';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {RootStackParamList} from '../navigation/home-navigation';
+import Toast from 'react-native-toast-message';
 
 const Login = ({
   navigation,
 }: NativeStackScreenProps<RootStackParamList, 'Login'>) => {
   const dispatch = useDispatch<AppDispatch>();
+  const [values, setValues] = useState({email: '', password: ''});
 
-  const formik = useFormik<{email: string; password: string}>({
-    initialValues: {
+  const handleChange = (key: 'email' | 'password', value: string) => {
+    setValues(pre => ({...pre, [key]: value}));
+  };
+
+  const validate = (_values: {email: string; password: string}) => {
+    let isValid = true;
+    const errors: {email: string; password: string} = {
       email: '',
       password: '',
-    },
-    onSubmit: values => {
+    };
+    if (!_values.email.length) {
+      isValid = false;
+      errors.email = 'Email is required';
+    }
+    if (!_values?.password?.length) {
+      isValid = false;
+      errors.password = 'password is required';
+    }
+    return isValid ? null : errors;
+  };
+  const onSubmit = () => {
+    const errors = validate(values);
+    if (errors) {
+      Toast.show({
+        type: 'error',
+        text1: Object.values(errors).find(err => err),
+      });
+    } else {
       dispatch(login(values));
-    },
-    validateOnMount: true,
-    validateOnChange: true,
-    validate: values => {
-      let isValid = true;
-      const errors: {email: string; password: string} = {
-        email: '',
-        password: '',
-      };
-      if (!values.email.length) {
-        isValid = false;
-        errors.email = 'Email is required';
-      }
-      if ((values?.password?.length || 0) < 4) {
-        isValid = false;
-        errors.password = 'password is required';
-      }
-      return isValid ? {} : errors;
-    },
-  });
+    }
+  };
+
   return (
     <View style={style.container}>
       <Text style={style.label}>Email</Text>
@@ -52,22 +58,19 @@ const Login = ({
         style={style.field}
         multiline
         placeholder="Email"
-        value={formik.values.email}
-        onChangeText={formik.handleChange('email')}
+        value={values.email}
+        onChangeText={value => handleChange('email', value)}
       />
       <Text style={style.label}>Password</Text>
 
       <TextInput
         style={style.field}
         placeholder="Password"
-        value={formik.values.password}
+        value={values.password}
         secureTextEntry
-        onChangeText={formik.handleChange('password')}
+        onChangeText={value => handleChange('password', value)}
       />
-      <TouchableOpacity
-        style={style.button}
-        disabled={!formik.isValid}
-        onPress={formik.submitForm}>
+      <TouchableOpacity style={style.button} onPress={onSubmit}>
         <Text>Login</Text>
       </TouchableOpacity>
       <TouchableOpacity

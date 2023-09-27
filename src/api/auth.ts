@@ -29,6 +29,7 @@ const signup = async ({
     throw new Error('Email is existed before');
   }
 
-  return axios.post<User>('users', {name, email, password});
+  const {data: user} = await axios.post<User>('users', {name, email, password});
+  return user;
 };
 export {login, signup};
