@@ -8,7 +8,7 @@ import {
 } from 'react-native';
 import {useDispatch} from 'react-redux';
 import {AppDispatch} from '../reducers/store';
-import {login} from '../reducers/user';
+import {login} from '../actions/user';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {RootStackParamList} from '../navigation/home-navigation';
 import Toast from 'react-native-toast-message';

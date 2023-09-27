@@ -1,4 +1,4 @@
-import {User} from '../types';
+import {User, UserResponse} from '../types';
 import axios from './axios';
 const login = async ({email, password}: {email: string; password: string}) => {
   try {
@@ -32,4 +32,12 @@ const signup = async ({
   const {data: user} = await axios.post<User>('users', {name, email, password});
   return user;
 };
-export {login, signup};
+const getUser = async (userId: number) => {
+  try {
+    const {data: user} = await axios.get<UserResponse>(`users/${userId}`);
+    return user;
+  } catch (error) {
+    throw new Error('user not found');
+  }
+};
+export {login, getUser, signup};

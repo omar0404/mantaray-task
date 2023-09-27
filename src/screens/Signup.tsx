@@ -8,7 +8,7 @@ import {
 } from 'react-native';
 import {useDispatch} from 'react-redux';
 import {AppDispatch} from '../reducers/store';
-import {signup} from '../reducers/user';
+import {signup} from '../actions/user';
 import Toast from 'react-native-toast-message';
 
 const Signup = () => {

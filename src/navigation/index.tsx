@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {StyleSheet, View} from 'react-native';
 import {
   createDrawerNavigator,
@@ -6,14 +6,13 @@ import {
   DrawerItem,
 } from '@react-navigation/drawer';
 import HomeNavigation, {RootStackParamList} from './home-navigation';
-import AddPostButton from '../components/add-post-button';
 import Login from '../screens/login';
 import Signup from '../screens/Signup';
 import MyProfile from '../screens/my-profile';
 import {useDispatch, useSelector} from 'react-redux';
 import {AppDispatch, RootState} from '../reducers/store';
 import {createStackNavigator} from '@react-navigation/stack';
-import {clearUser} from '../actions/user';
+import {clearUser, getUser} from '../actions/user';
 const Drawer = createDrawerNavigator();
 const Stack = createStackNavigator<RootStackParamList>();
 
@@ -42,7 +41,16 @@ const DrawerItems = (props: DrawerContentComponentProps) => {
 };
 
 function MyDrawer() {
-  const {user} = useSelector<RootState, RootState['user']>(state => state.user);
+  const {user, isLoading} = useSelector<RootState, RootState['user']>(
+    state => state.user,
+  );
+  const dispatch = useDispatch<AppDispatch>();
+  useEffect(() => {
+    dispatch(getUser(user?.id));
+  }, []);
+  if (isLoading) {
+    return null;
+  }
   if (!user) {
     return (
       <Stack.Navigator>
@@ -53,13 +61,7 @@ function MyDrawer() {
   }
   return (
     <Drawer.Navigator drawerContent={DrawerItems}>
-      <Drawer.Screen
-        options={{
-          headerRight: AddPostButton,
-        }}
-        name="Home"
-        component={HomeNavigation}
-      />
+      <Drawer.Screen name="Main" component={HomeNavigation} />
       {user && <Drawer.Screen name="MyProfile" component={MyProfile} />}
     </Drawer.Navigator>
   );
